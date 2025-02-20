@@ -1,5 +1,5 @@
 const readline = require("readline");
-
+const { exit } = require('process');
 
 
 const rl = readline.createInterface({
@@ -9,8 +9,13 @@ const rl = readline.createInterface({
 
 function prompt() {
   rl.question("$ ", (answer) => {
-    console.log(`${answer}: command not found`);
+    if (answer === 'exit 0') {
+      exit(0);
+    } else {
+      console.log(`${answer}: command not found`);
+    }
     prompt();
   });
 }
-prompt();
+
+prompt()
