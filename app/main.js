@@ -9,8 +9,11 @@ const rl = readline.createInterface({
 
 function prompt() {
   rl.question("$ ", (answer) => {
+    const args = answer.split(" ");
     if (answer === 'exit 0') {
       exit(0);
+    } else if (args[0] === 'echo') {
+      console.log(...args.splice(1, args.length));
     } else {
       console.log(`${answer}: command not found`);
     }
