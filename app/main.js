@@ -4,7 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const { spawnSync } = require('child_process');
 
-const builtin = ['echo', 'exit', 'type', 'pwd'];
+const builtin = ['echo', 'exit', 'type', 'pwd', 'cd'];
 const pathEnv = process.env.PATH;
 
 const rl = readline.createInterface({
@@ -17,6 +17,7 @@ function prompt() {
     const args = answer.split(" ");
     switch (args[0]) {
       case 'exit':
+        if (args.length < 2 || args[1] !== '0') break;
         exit(0);
       case 'echo':
         console.log(...args.splice(1, args.length));
@@ -37,6 +38,10 @@ function prompt() {
         break;
       case 'pwd':
         console.log(process.env.PWD);
+        break;
+      case 'cd':
+        if (fs.existsSync(args[1])) process.env.PWD = `${args[1]}`;
+        else console.log(`${args[0]}: ${args[1]}: No such file or directory`);
         break;
       default:
         const filePath = getFilePath(args[0]);
