@@ -2,7 +2,7 @@ const readline = require("readline");
 const { exit } = require('process');
 const fs = require('fs');
 const path = require('path');
-const { execSync } = require('child_process');
+const { exec } = require('child_process');
 
 const builtin = ['echo', 'exit', 'type'];
 const pathEnv = process.env.PATH;
@@ -23,14 +23,14 @@ function prompt() {
       if (builtin.includes(args[1])) console.log(`${args[1]} is a shell builtin`);
       else {
         const fileName = isFile(args[1]);
-        if(fileName === null) console.log(`${args[1]}: not found`);
+        if (fileName === null) console.log(`${args[1]}: not found`);
         else console.log(`${args[1]} is ${fileName}`);
       }
     } else {
       const filePath = isFile(args[0]);
       if (filePath === null) console.log(`${answer}: command not found`);
       else {
-        execSync(filePath, [...args.splice(1, args.length - 1)]);
+        exec(answer);
       }
     }
     prompt();
