@@ -2,7 +2,7 @@ const readline = require("readline");
 const { exit } = require('process');
 const fs = require('fs');
 const path = require('path');
-const { execFileSync, spawnSync } = require('child_process');
+const { spawnSync } = require('child_process');
 
 const builtin = ['echo', 'exit', 'type', 'pwd'];
 const pathEnv = process.env.PATH;
