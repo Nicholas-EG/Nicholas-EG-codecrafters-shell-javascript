@@ -2,6 +2,7 @@ const readline = require("readline");
 const { exit } = require('process');
 const fs = require('fs');
 const path = require('path');
+const { execSync } = require('child_process');
 
 const builtin = ['echo', 'exit', 'type'];
 const pathEnv = process.env.PATH;
@@ -14,31 +15,38 @@ const rl = readline.createInterface({
 function prompt() {
   rl.question("$ ", (answer) => {
     const args = answer.split(" ");
-    if (args[0] === 'exit') {
+    if (answer === 'exit 0') {
       exit(args[1]);
     } else if (args[0] === 'echo') {
       console.log(...args.splice(1, args.length));
     } else if (args[0] === 'type') {
       if (builtin.includes(args[1])) console.log(`${args[1]} is a shell builtin`);
       else {
-        const dirs = pathEnv.split(path.delimiter);
-        let found = false;
-        for (const dir of dirs) {
-          const filePath = path.join(dir, args[1]);
-          try {
-            fs.readFileSync(filePath);
-            console.log(`${args[1]} is ${filePath}`);
-            found = true;
-            break;
-          } catch(err) {}
-        }
-        if (!found) console.log(`${args[1]}: not found`);
+        const fileName = isFile(args[1]);
+        if(fileName === null) console.log(`${args[1]}: not found`);
+        else console.log(`${args[1]} is ${fileName}`);
       }
     } else {
-      console.log(`${answer}: command not found`);
+      const filePath = isFile(args[0]);
+      if (filePath === null) console.log(`${answer}: command not found`);
+      else {
+        execSync(filePath, [...args.splice(1, args.length - 1)]);
+      }
     }
     prompt();
   });
+}
+
+function isFile(fileName) {
+  const dirs = pathEnv.split(path.delimiter);
+  for (const dir of dirs) {
+    const filePath = path.join(dir, fileName);
+    try {
+      fs.readFileSync(filePath);
+      return filePath;
+    } catch (err) { }
+  }
+  return null;
 }
 
 prompt()
