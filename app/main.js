@@ -2,7 +2,7 @@ const readline = require("readline");
 const { exit } = require('process');
 const fs = require('fs');
 const path = require('path');
-const { exec } = require('child_process');
+const { execFileSync, spawnSync } = require('child_process');
 
 const builtin = ['echo', 'exit', 'type'];
 const pathEnv = process.env.PATH;
@@ -16,35 +16,43 @@ function prompt() {
   rl.question("$ ", (answer) => {
     const args = answer.split(" ");
     if (answer === 'exit 0') {
-      exit(args[1]);
+      exit(0);
     } else if (args[0] === 'echo') {
       console.log(...args.splice(1, args.length));
     } else if (args[0] === 'type') {
-      if (builtin.includes(args[1])) console.log(`${args[1]} is a shell builtin`);
+      if (builtin.includes(args[1])) {
+        console.log(`${args[1]} is a shell builtin`);
+      }
       else {
-        const fileName = isFile(args[1]);
-        if (fileName === null) console.log(`${args[1]}: not found`);
-        else console.log(`${args[1]} is ${fileName}`);
+        const fileName = getFilePath(args[1]);
+        if (fileName === null) {
+          console.log(`${args[1]}: not found`);
+        }
+        else {
+          console.log(`${args[1]} is ${fileName}`);
+        }
       }
     } else {
-      const filePath = isFile(args[0]);
-      if (filePath === null) console.log(`${answer}: command not found`);
+      const filePath = getFilePath(args[0]);
+      if (filePath === null) console.log(`${args[0]}: command not found`);
       else {
-        exec(answer);
+        try {
+          spawnSync(`${args[0]}`, args.slice(1), { shell: true, stdio: 'inherit' });
+        } catch (err) {
+          console.error(`Error executing command: ${err.message}`);
+          console.error(err.stack);
+        }
       }
     }
     prompt();
   });
 }
 
-function isFile(fileName) {
+function getFilePath(fileName) {
   const dirs = pathEnv.split(path.delimiter);
   for (const dir of dirs) {
     const filePath = path.join(dir, fileName);
-    try {
-      fs.readFileSync(filePath);
-      return filePath;
-    } catch (err) { }
+    if (fs.existsSync(filePath)) return filePath;
   }
   return null;
 }
