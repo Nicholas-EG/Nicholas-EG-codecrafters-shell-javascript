@@ -36,6 +36,7 @@ function prompt() {
         }
         break;
       case 'pwd':
+        console.log(process.env.PWD);
         break;
       default:
         const filePath = getFilePath(args[0]);
