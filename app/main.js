@@ -12,6 +12,31 @@ const rl = readline.createInterface({
   output: process.stdout,
 });
 
+function getFilePath(fileName) {
+  const dirs = pathEnv.split(path.delimiter);
+  for (const dir of dirs) {
+    const filePath = path.join(dir, fileName);
+    if (fs.existsSync(filePath)) return filePath;
+  }
+  return null;
+}
+
+function buildPathToDirectory(relativePath) {
+  const rPath = relativePath.split('\\');
+  const currDirectory = String(process.env.PWD).split('\\');
+  while (rPath.length !== 0) {
+    if (rPath[0] === "..") {
+      currDirectory.pop();
+      rPath.shift();
+    } else if (rPath[0] === '.') {
+      rPath.shift()
+    } else {
+      currDirectory.push(rPath.shift());
+    }
+  }
+  return currDirectory.join('\\');
+}
+
 function prompt() {
   rl.question("$ ", (answer) => {
     const args = answer.split(" ");
@@ -40,7 +65,8 @@ function prompt() {
         console.log(process.env.PWD);
         break;
       case 'cd':
-        if (fs.existsSync(args[1])) process.env.PWD = `${args[1]}`;
+        if (fs.existsSync(buildPathToDirectory(args[1]))) process.env.PWD = buildPathToDirectory(args[1]);
+        else if (fs.existsSync(args[1])) process.env.PWD = `${args[1]}`;
         else console.log(`${args[0]}: ${args[1]}: No such file or directory`);
         break;
       default:
@@ -60,13 +86,4 @@ function prompt() {
   });
 }
 
-function getFilePath(fileName) {
-  const dirs = pathEnv.split(path.delimiter);
-  for (const dir of dirs) {
-    const filePath = path.join(dir, fileName);
-    if (fs.existsSync(filePath)) return filePath;
-  }
-  return null;
-}
-
-prompt()
+prompt();
