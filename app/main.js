@@ -22,7 +22,8 @@ function getFilePath(fileName) {
 }
 
 function buildPathToDirectory(relativePath) {
-  const rPath = relativePath.split('/');
+  const rPath = relativePath.split('/').filter((term) => term !== '');
+  console.log(rPath)
   const currDirectory = String(process.env.PWD).split('/');
   while (rPath.length !== 0) {
     if (rPath[0] === "..") {
