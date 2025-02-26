@@ -26,10 +26,6 @@ function buildPathToDirectory(relativePath) {
   const currDirectory = String(process.env.PWD).split('/');
   while (rPath.length !== 0) {
     if (rPath[0] === "..") {
-      if (currDirectory.length === 1) {
-        rPath.shift();
-        continue;
-      };
       currDirectory.pop();
       rPath.shift();
     } else if (rPath[0] === '.') {
