@@ -22,8 +22,8 @@ function getFilePath(fileName) {
 }
 
 function buildPathToDirectory(relativePath) {
-  const rPath = relativePath.split('\\');
-  const currDirectory = String(process.env.PWD).split('\\');
+  const rPath = relativePath.split('/');
+  const currDirectory = String(process.env.PWD).split('/');
   while (rPath.length !== 0) {
     if (rPath[0] === "..") {
       if (currDirectory.length === 1) {
@@ -38,7 +38,7 @@ function buildPathToDirectory(relativePath) {
       currDirectory.push(rPath.shift());
     }
   }
-  return currDirectory.join('\\');
+  return currDirectory.join('/');
 }
 
 function prompt() {
