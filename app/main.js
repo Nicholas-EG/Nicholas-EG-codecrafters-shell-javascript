@@ -24,6 +24,7 @@ function getFilePath(fileName) {
 function buildPathToDirectory(relativePath) {
   const rPath = relativePath.split('/');
   const currDirectory = String(process.env.PWD).split('/');
+  console.log('input path: ' + rPath + '\nPWD: ' + currDirectory)
   while (rPath.length !== 0) {
     if (rPath[0] === "..") {
       currDirectory.pop();
@@ -40,6 +41,7 @@ function buildPathToDirectory(relativePath) {
 function prompt() {
   rl.question("$ ", (answer) => {
     const args = answer.split(" ");
+    console.log(args)
     switch (args[0]) {
       case 'exit':
         if (args.length < 2 || args[1] !== '0') break;
@@ -65,8 +67,14 @@ function prompt() {
         console.log(process.env.PWD);
         break;
       case 'cd':
-        if (fs.existsSync(buildPathToDirectory(args[1]))) process.env.PWD = buildPathToDirectory(args[1]);
-        else if (fs.existsSync(args[1])) process.env.PWD = `${args[1]}`;
+        if (fs.existsSync(buildPathToDirectory(args[1]))) {
+          process.env.PWD = buildPathToDirectory(args[1]);
+          console.log('check 1')
+        }
+        else if (fs.existsSync(args[1])) {
+          process.env.PWD = `${args[1]}`;
+          console.log('check 2')
+        }
         else console.log(`${args[0]}: ${args[1]}: No such file or directory`);
         break;
       default:
