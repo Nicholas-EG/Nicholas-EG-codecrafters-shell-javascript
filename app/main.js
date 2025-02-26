@@ -65,6 +65,7 @@ function prompt() {
         console.log(process.env.PWD);
         break;
       case 'cd':
+        if (args[1] === '~') process.env.PWD = process.env.HOME;
         if (fs.existsSync(buildPathToDirectory(args[1]))) {
           process.env.PWD = buildPathToDirectory(args[1]);
         }
