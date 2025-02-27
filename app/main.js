@@ -46,12 +46,13 @@ function parser(inputText) {
       term = "";
       isInQuotes = !isInQuotes;
     }
-    else if (i === " " && !isInQuotes) {
+    else if (i.match(/\s/) !== null && !isInQuotes) {
       result.push(term);
       term = "";
     }
     else term += i;
   }
+  result.push(term)
   return result.filter((term) => term !== '');
 }
 
