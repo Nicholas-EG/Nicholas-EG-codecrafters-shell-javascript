@@ -37,13 +37,22 @@ function buildPathToDirectory(relativePath) {
 }
 
 function parser(inputText) {
-  if (!inputText.includes('\'')) return inputText.split(/\s/g).filter((term) => term !== '');
   let result = [];
-  result.push(inputText.split(" ")[0]);
-  for (const term of inputText.matchAll(/\'(.*)\'/g)) {
-    result.push(term[1]);
+  let isInQuotes = false;
+  let term = "";
+  for (const i of inputText) {
+    if (i === "\'") {
+      result.push(term);
+      term = "";
+      isInQuotes = !isInQuotes;
+    }
+    else if (i === " " && !isInQuotes) {
+      result.push(term);
+      term = "";
+    }
+    else term += i;
   }
-  return result;
+  return result.filter((term) => term !== '');
 }
 
 function prompt() {
@@ -109,3 +118,4 @@ prompt();
 
 // console.log(parser('echo \'world     test\''))
 // console.log(parser('echo word   type'))
+// console.log(parser('echo \'hello    example\' \'world\'\'shell')) // expects "hello   example worldshell"
