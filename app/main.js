@@ -4,8 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const { spawnSync } = require('child_process');
 
-const builtin = ['echo', 'exit', 'type', 'pwd', 'cd'];
-const pathEnv = process.env.PATH;
+const builtin = ['echo', 'exit', 'type', 'pwd', 'cd', 'cat'];
 
 const rl = readline.createInterface({
   input: process.stdin,
@@ -13,7 +12,7 @@ const rl = readline.createInterface({
 });
 
 function getFilePath(fileName) {
-  const dirs = pathEnv.split(path.delimiter);
+  const dirs = process.env.PATH.split(path.delimiter);
   for (const dir of dirs) {
     const filePath = path.join(dir, fileName);
     if (fs.existsSync(filePath)) return filePath;
@@ -37,9 +36,19 @@ function buildPathToDirectory(relativePath) {
   return currDirectory.join('/');
 }
 
+function parser(inputText) {
+  if (!inputText.includes('\'')) return inputText.split (' ');
+  let result = [];
+  result.push(inputText.split(" ")[0]);
+  for (const term of inputText.matchAll(/\'(.*)\'/g)) {
+    result.push(term[1]);
+  }
+  return result;
+}
+
 function prompt() {
   rl.question("$ ", (answer) => {
-    const args = answer.split(" ");
+    const args = parser(answer);
     switch (args[0]) {
       case 'exit':
         if (args.length < 2 || args[1] !== '0') break;
@@ -74,6 +83,11 @@ function prompt() {
         }
         else console.log(`${args[0]}: ${args[1]}: No such file or directory`);
         break;
+      case 'cat':
+        args.slice(1).forEach((arg) => {
+          if (fs.existsSync(arg)) console.log(fs.readFileSync(arg, 'utf-8'));
+        });
+        break;
       default:
         const filePath = getFilePath(args[0]);
         if (filePath === null) console.log(`${args[0]}: command not found`);
@@ -92,3 +106,5 @@ function prompt() {
 }
 
 prompt();
+
+// console.log(parser('echo \'world     test\''))
