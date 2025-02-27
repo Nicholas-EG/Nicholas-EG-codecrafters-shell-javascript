@@ -37,7 +37,7 @@ function buildPathToDirectory(relativePath) {
 }
 
 function parser(inputText) {
-  if (!inputText.includes('\'')) return inputText.split (' ');
+  if (!inputText.includes('\'')) return inputText.split(/\s/g).filter((term) => term !== '');
   let result = [];
   result.push(inputText.split(" ")[0]);
   for (const term of inputText.matchAll(/\'(.*)\'/g)) {
@@ -108,3 +108,4 @@ function prompt() {
 prompt();
 
 // console.log(parser('echo \'world     test\''))
+// console.log(parser('echo word   type'))
