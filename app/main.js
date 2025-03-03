@@ -40,17 +40,17 @@ function parser(inputText) {
   let result = [];
   let isInQuotes = false;
   let term = "";
-  for (const i of inputText) {
-    if (i === "\'") {
-      result.push(term);
+  for (let i = 0; i < inputText.length; i++) {
+    if (i === inputText.indexOf('\'') || i === inputText.lastIndexOf('\'')) {
+      result.push(term.replaceAll('\'', ''));
       term = "";
       isInQuotes = !isInQuotes;
     }
-    else if (i.match(/\s/) !== null && !isInQuotes) {
+    else if (inputText[i].match(/\s/) !== null && !isInQuotes) {
       result.push(term);
       term = "";
     }
-    else term += i;
+    else term += inputText[i];
   }
   result.push(term)
   return result.filter((term) => term !== '');
