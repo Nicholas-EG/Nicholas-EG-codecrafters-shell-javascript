@@ -40,19 +40,18 @@ function parser(inputText) {
   let result = [];
   let isInQuotes = false;
   let term = "";
-  for (let i = 0; i < inputText.length; i++) {
-    if (i === inputText.indexOf('\'') || i === inputText.lastIndexOf('\'')) {
-      result.push(term.replaceAll('\'', ''));
+  for (const i of inputText) {
+    if (i === "\'") {
+      result.push(term);
       term = "";
       isInQuotes = !isInQuotes;
     }
-    else if (inputText[i].match(/\s/) !== null && !isInQuotes) {
+    else if (i === " " && !isInQuotes) {
       result.push(term);
       term = "";
     }
-    else term += inputText[i];
+    else term += i;
   }
-  result.push(term)
   return result.filter((term) => term !== '');
 }
 
@@ -64,7 +63,11 @@ function prompt() {
         if (args.length < 2 || args[1] !== '0') break;
         exit(0);
       case 'echo':
-        console.log(...args.splice(1, args.length));
+        if (answer.includes('\'')) {
+          console.log(answer.substring(answer.indexOf('\''), answer.lastIndexOf('\'')));
+        } else {
+          console.log(...args.splice(1, args.length));
+        }
         break;
       case 'type':
         if (builtin.includes(args[1])) {
