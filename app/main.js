@@ -65,7 +65,9 @@ function prompt() {
         if (args.length < 2 || args[1] !== '0') break;
         exit(0);
       case 'echo':
-        if (answer.includes('\'')) {
+        if (answer.includes('\"')) {
+          console.log(answer.substring(answer.indexOf('\"'), answer.lastIndexOf('\"')).replaceAll('\"', ''));
+        } else if (answer.includes('\'')) {
           console.log(answer.substring(answer.indexOf('\''), answer.lastIndexOf('\'')).replaceAll('\'', ''));
         } else {
           console.log(...args.splice(1, args.length));
@@ -103,7 +105,7 @@ function prompt() {
         for (let i = 1; i < args.length; i++) {
           if (fs.existsSync(args[i])) output += fs.readFileSync(args[i], 'utf-8');
         }
-        output === "" ? output : process.stdout.write(output);
+        process.stdout.write(output);
         break;
       default:
         const filePath = getFilePath(args[0]);
