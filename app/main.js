@@ -60,7 +60,6 @@ function parser(inputText) {
 function prompt() {
   rl.question("$ ", (answer) => {
     const args = parser(answer);
-    // console.log(args);
     switch (args[0]) {
       case 'exit':
         if (args.length < 2 || args[1] !== '0') break;
@@ -124,7 +123,3 @@ function prompt() {
 }
 
 prompt();
-
-// console.log(parser('echo \'world     test\''))
-// console.log(parser('echo word   type'))
-// console.log(parser('echo \'hello    example\' \'world\'\'shell')) // expects "hello   example worldshell"
