@@ -103,7 +103,7 @@ function prompt() {
         for (let i = 1; i < args.length; i++) {
           if (fs.existsSync(args[i])) output += fs.readFileSync(args[i], 'utf-8');
         }
-        console.log(output);
+        output === "" ? output : console.log(output);
         break;
       default:
         const filePath = getFilePath(args[0]);
