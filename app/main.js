@@ -4,7 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const { spawnSync } = require('child_process');
 
-const builtin = ['echo', 'exit', 'type', 'pwd', 'cd', 'cat'];
+const builtin = ['echo', 'exit', 'type', 'pwd', 'cd'];
 
 const rl = readline.createInterface({
   input: process.stdin,
