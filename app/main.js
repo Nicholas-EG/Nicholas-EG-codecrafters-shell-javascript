@@ -100,9 +100,11 @@ function prompt() {
         else console.log(`${args[0]}: ${args[1]}: No such file or directory`);
         break;
       case 'cat':
-        args.slice(1).forEach((arg) => {
-          if (fs.existsSync(arg)) console.log(fs.readFileSync(arg, 'utf-8'));
-        });
+        let output = "";
+        for (let i = 1; i < args.length; i++) {
+          if (fs.existsSync(args[i])) output += fs.readFileSync(args[i], 'utf-8');
+        }
+        console.log(output);
         break;
       default:
         const filePath = getFilePath(args[0]);
