@@ -12,6 +12,7 @@ const rl = readline.createInterface({
 });
 
 function getFilePath(fileName) {
+  if (fileName === undefined) return null;
   const dirs = process.env.PATH.split(path.delimiter);
   for (const dir of dirs) {
     const filePath = path.join(dir, fileName);
@@ -46,25 +47,27 @@ function parser(inputText) {
       term = "";
       isInQuotes = !isInQuotes;
     }
-    else if (i === " " && !isInQuotes) {
+    else if (i.match(/\s/g) !== null && !isInQuotes) {
       result.push(term);
       term = "";
     }
     else term += i;
   }
+  result.push(term);
   return result.filter((term) => term !== '');
 }
 
 function prompt() {
   rl.question("$ ", (answer) => {
     const args = parser(answer);
+    // console.log(args);
     switch (args[0]) {
       case 'exit':
         if (args.length < 2 || args[1] !== '0') break;
         exit(0);
       case 'echo':
         if (answer.includes('\'')) {
-          console.log(answer.substring(answer.indexOf('\''), answer.lastIndexOf('\'')));
+          console.log(answer.substring(answer.indexOf('\''), answer.lastIndexOf('\'')).replaceAll('\'', ''));
         } else {
           console.log(...args.splice(1, args.length));
         }
