@@ -42,6 +42,7 @@ function parser(inputText) {
   inputText = inputText.replaceAll(/""|''/g, '');
   let result = [];
   let isInDoubleQuotes = false;
+  let isEscaped = false;
   let isInSingleQuotes = false;
   let term = "";
   for (const i of inputText) {
@@ -53,11 +54,20 @@ function parser(inputText) {
       result.push(term);
       term = "";
       isInDoubleQuotes = !isInDoubleQuotes;
-    } else if (i.match(/\s/g) !== null && !(isInSingleQuotes || isInDoubleQuotes)) {
+    } else if (
+      i.match(/\s/g) !== null &&
+      !isEscaped &&
+      !(isInSingleQuotes || isInDoubleQuotes)
+    ) {
       result.push(term);
       term = "";
+    } else if (i.match(/\\/g) !== null && !(isInSingleQuotes || isInDoubleQuotes)) {
+      isEscaped = !isEscaped;
     }
-    else term += i;
+    else {
+      if (isEscaped) isEscaped = !isEscaped;
+      term += i;
+    }
   }
   result.push(term);
   return result.filter((term) => term !== '');
@@ -66,6 +76,7 @@ function parser(inputText) {
 function prompt() {
   rl.question("$ ", (answer) => {
     const args = parser(answer);
+    console.log(args);
     switch (args[0]) {
       case 'exit':
         if (args.length < 2 || args[1] !== '0') break;
