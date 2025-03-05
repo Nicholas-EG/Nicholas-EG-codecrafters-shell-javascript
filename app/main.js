@@ -39,17 +39,21 @@ function buildPathToDirectory(relativePath) {
 
 // If two quoted blocks are next to one another with no whitespace in between, they should be concatenated together
 function parser(inputText) {
-  inputText = inputText.replaceAll("\"\"", '').replaceAll('\'\'', '');
+  inputText = inputText.replaceAll(/""|''/g, '');
   let result = [];
-  let isInQuotes = false;
+  let isInDoubleQuotes = false;
+  let isInSingleQuotes = false;
   let term = "";
   for (const i of inputText) {
-    if (i === "\'" || i === "\"") {
+    if (i === "\'" && !isInDoubleQuotes) {
       result.push(term);
       term = "";
-      isInQuotes = !isInQuotes;
-    }
-    else if (i.match(/\s/g) !== null && !isInQuotes) {
+      isInSingleQuotes = !isInSingleQuotes;
+    } else if (i === '\"' && !isInSingleQuotes) {
+      result.push(term);
+      term = "";
+      isInDoubleQuotes = !isInDoubleQuotes;
+    } else if (i.match(/\s/g) !== null && !(isInSingleQuotes || isInDoubleQuotes)) {
       result.push(term);
       term = "";
     }
@@ -67,13 +71,7 @@ function prompt() {
         if (args.length < 2 || args[1] !== '0') break;
         exit(0);
       case 'echo':
-        // if (answer.includes('\"')) {
-        //   console.log(answer.substring(answer.indexOf('\"'), answer.lastIndexOf('\"')).replaceAll('\"', ''));
-        // } else if (answer.includes('\'')) {
-        //   console.log(answer.substring(answer.indexOf('\''), answer.lastIndexOf('\'')).replaceAll('\'', ''));
-        // } else {
-          console.log(...args.splice(1, args.length));
-        // }
+        console.log(...args.splice(1, args.length));
         break;
       case 'type':
         if (builtin.includes(args[1])) {
