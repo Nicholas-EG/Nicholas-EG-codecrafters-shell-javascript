@@ -42,7 +42,7 @@ function parser(inputText) {
   let isInQuotes = false;
   let term = "";
   for (const i of inputText) {
-    if (i === "\'") {
+    if (i === "\'" || i === "\"") {
       result.push(term);
       term = "";
       isInQuotes = !isInQuotes;
