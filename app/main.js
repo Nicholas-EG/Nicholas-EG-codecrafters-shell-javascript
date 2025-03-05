@@ -46,7 +46,12 @@ function parser(inputText) {
   let isInSingleQuotes = false;
   let term = "";
   for (const i of inputText) {
-    if (
+    if (i.match(/\\|\"|\$/g) !== null &&
+      isEscaped &&
+      isInDoubleQuotes
+    ) {
+      term += i;
+    } else if (
       i === "\'" &&
       !isEscaped &&
       !isInDoubleQuotes
@@ -71,7 +76,7 @@ function parser(inputText) {
       term = "";
     } else if (
       i.match(/\\/g) !== null &&
-      !(isInSingleQuotes || isInDoubleQuotes)
+      !isInSingleQuotes
     ) {
       isEscaped = !isEscaped;
     }
@@ -87,7 +92,6 @@ function parser(inputText) {
 function prompt() {
   rl.question("$ ", (answer) => {
     const args = parser(answer);
-    // console.log(args);
     switch (args[0]) {
       case 'exit':
         if (args.length < 2 || args[1] !== '0') break;
@@ -147,6 +151,3 @@ function prompt() {
 }
 
 prompt();
-
-// let test = "echo \'\"hello shell\"\'"; // should return '"hello shell"'
-// console.log(parser(test));
