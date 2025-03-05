@@ -46,11 +46,19 @@ function parser(inputText) {
   let isInSingleQuotes = false;
   let term = "";
   for (const i of inputText) {
-    if (i === "\'" && !isInDoubleQuotes) {
+    if (
+      i === "\'" &&
+      !isEscaped &&
+      !isInDoubleQuotes
+    ) {
       result.push(term);
       term = "";
       isInSingleQuotes = !isInSingleQuotes;
-    } else if (i === '\"' && !isInSingleQuotes) {
+    } else if (
+      i === '\"' &&
+      !isEscaped &&
+      !isInSingleQuotes
+    ) {
       result.push(term);
       term = "";
       isInDoubleQuotes = !isInDoubleQuotes;
@@ -61,7 +69,10 @@ function parser(inputText) {
     ) {
       result.push(term);
       term = "";
-    } else if (i.match(/\\/g) !== null && !(isInSingleQuotes || isInDoubleQuotes)) {
+    } else if (
+      i.match(/\\/g) !== null &&
+      !(isInSingleQuotes || isInDoubleQuotes)
+    ) {
       isEscaped = !isEscaped;
     }
     else {
@@ -136,3 +147,6 @@ function prompt() {
 }
 
 prompt();
+
+// let test = "echo \'\"hello shell\"\'"; // should return '"hello shell"'
+// console.log(parser(test));
