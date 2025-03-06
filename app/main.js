@@ -39,19 +39,21 @@ function buildPathToDirectory(relativePath) {
 
 // If two quoted blocks are next to one another with no whitespace in between, they should be concatenated together
 function parser(inputText) {
-  inputText = inputText.replaceAll(/[^\\\s]["']\S/g, '');
+  inputText = inputText.replaceAll(/([^\\])"/g, '$1');
   let result = [];
   let isInDoubleQuotes = false;
   let isEscaped = false;
   let isInSingleQuotes = false;
   let term = "";
   for (const i of inputText) {
-    if (i.match(/\\|\"|\$/g) !== null &&
+    if (
+      i.match(/\\|\"|\$/g) !== null &&
       isEscaped &&
       isInDoubleQuotes
     ) {
       term += i;
-    } else if (
+    }
+    else if (
       i === "\'" &&
       !isEscaped &&
       !isInDoubleQuotes
@@ -59,7 +61,8 @@ function parser(inputText) {
       result.push(term);
       term = "";
       isInSingleQuotes = !isInSingleQuotes;
-    } else if (
+    }
+    else if (
       i === '\"' &&
       !isEscaped &&
       !isInSingleQuotes
@@ -67,14 +70,16 @@ function parser(inputText) {
       result.push(term);
       term = "";
       isInDoubleQuotes = !isInDoubleQuotes;
-    } else if (
+    }
+    else if (
       i.match(/\s/g) !== null &&
       !isEscaped &&
       !(isInSingleQuotes || isInDoubleQuotes)
     ) {
       result.push(term);
       term = "";
-    } else if (
+    }
+    else if (
       i.match(/\\/g) !== null &&
       !isInSingleQuotes
     ) {
