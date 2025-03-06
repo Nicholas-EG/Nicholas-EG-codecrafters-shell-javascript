@@ -39,7 +39,7 @@ function buildPathToDirectory(relativePath) {
 
 // If two quoted blocks are next to one another with no whitespace in between, they should be concatenated together
 function parser(inputText) {
-  inputText = inputText.replaceAll(/""|''/g, '');
+  inputText = inputText.replaceAll(/[^\\\s]["']\S/g, '');
   let result = [];
   let isInDoubleQuotes = false;
   let isEscaped = false;
